@@ -1,0 +1,19 @@
+{
+	"schemaVersion": 1,
+	"id": "wworldmap_utils",
+	"version": "${version}",
+	"name": "wWorldMap Utils",
+	"description": "Lets servers control which wWorldMap client features are available.",
+	"authors": ["wSmoothie"],
+	"license": "All Rights Reserved",
+	"environment": "server",
+	"entrypoints": {
+		"main": ["com.wworldmap.utils.fabric.WorldMapUtilsFabric"]
+	},
+	"depends": {
+		"fabricloader": ">=${loader_version}",
+		"minecraft": ">=1.21.11 <1.22",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
