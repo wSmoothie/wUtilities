@@ -86,8 +86,14 @@ Get-ChildItem -LiteralPath $ModsDirectory -Filter 'wWaypoints*.jar' -ErrorAction
     Remove-Item -Force
 
 Write-Host 'Building wWaypoints...'
-& (Join-Path $WaypointsRoot 'gradlew.bat') remapJar
-if ($LASTEXITCODE -ne 0) { throw "wWaypoints build failed with exit code $LASTEXITCODE." }
+Push-Location $WaypointsRoot
+try {
+    & (Join-Path $WaypointsRoot 'gradlew.bat') remapJar
+    $waypointsExitCode = $LASTEXITCODE
+} finally {
+    Pop-Location
+}
+if ($waypointsExitCode -ne 0) { throw "wWaypoints build failed with exit code $waypointsExitCode." }
 $waypointsJar = Get-ChildItem -LiteralPath (Join-Path $WaypointsRoot 'build\libs') -Filter 'wWaypoints-*.jar' |
     Where-Object { $_.Name -notmatch '-sources\.jar$|-obf\.jar$' } |
     Sort-Object LastWriteTime -Descending | Select-Object -First 1
@@ -111,5 +117,11 @@ if ($PrepareOnly) {
 }
 
 Write-Host 'Launching the Fabric development client...'
-& (Join-Path $WorldMapRoot 'gradlew.bat') runClient '-PuseSiblingWWaypoints' '-PwithoutWWaypoints'
-exit $LASTEXITCODE
+Push-Location $WorldMapRoot
+try {
+    & (Join-Path $WorldMapRoot 'gradlew.bat') runClient '-PuseSiblingWWaypoints' '-PwithoutWWaypoints'
+    $clientExitCode = $LASTEXITCODE
+} finally {
+    Pop-Location
+}
+exit $clientExitCode
