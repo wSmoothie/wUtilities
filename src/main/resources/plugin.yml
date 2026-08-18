@@ -2,6 +2,6 @@ name: wWorldMapUtils
 version: '${version}'
 main: com.wworldmap.utils.paper.WorldMapUtilsPlugin
 description: Lets servers control which wWorldMap client features are available.
-author: wSmoothie
+authors: [wSmoothie, literal.uu]
 api-version: '1.21.11'
 folia-supported: true
