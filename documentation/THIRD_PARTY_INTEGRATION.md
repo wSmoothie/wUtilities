@@ -57,3 +57,9 @@ The `PolicyPayload` type ID must be `wworldmap:policy`; its codec must match the
 The official Utils build reads configuration only at startup. A third-party implementation may support live updates. Publish a complete replacement mask to every connected player; masks are snapshots, not patches. Sending mask `0` removes all server restrictions.
 
 Keep payload generation bounded and deterministic. Do not accept a client-supplied mask as server policy, and do not use this channel for secrets or durable server-to-server messaging.
+
+## Forge and NeoForge
+
+Minecraft 1.20.5 and newer use the typed `CustomPacketPayload` form of this protocol. Register the clientbound play payload as optional, use the exact `wworldmap:policy` type and version-2 codec, and send only when the remote connection advertises the channel. Forge and NeoForge use different native registration and distribution APIs; do not make either loader depend on the other's classes.
+
+Minecraft 1.20.1 Forge and 1.20.2-1.20.4 NeoForge use the legacy custom-payload form. The bytes remain identical (`02`, then the disabled-mask VarInt), but the vanilla packet package/constructor changes at 1.20.2. Keep that compatibility edge isolated instead of reflecting across packet classes.

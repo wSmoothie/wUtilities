@@ -1,44 +1,39 @@
 # wWorldMap Utils
 
-wWorldMap Utils lets a Minecraft server disable all of wWorldMap or selected client features. One JAR detects its loader through isolated entrypoints and runs as either:
+wWorldMap Utils lets a Minecraft server disable all of wWorldMap or selected client features. It supports Minecraft 1.20 and newer through platform-specific artifacts:
 
-- a Fabric server mod;
-- a Bukkit plugin on Paper, Folia, Purpur, or Leaf.
+- Bukkit: Spigot, Paper, and Folia (also compatible derivatives such as Purpur and Leaf);
+- Fabric and Quilt through the shared Fabric-compatible server artifact;
+- native Forge artifacts for the Forge versions supported by wWorldMap;
+- native NeoForge artifacts across the 1.20+ compatibility cohorts.
 
-The current release supports Minecraft 1.21.11 and Java 21. Clients need a wWorldMap build that implements the `wworldmap:policy` channel. Players without wWorldMap can join normally.
+Clients need a wWorldMap build that implements protocol v2 on `wworldmap:policy`. Players without wWorldMap can join normally. Architectury Loom and Stonecutter provide the cross-version build, while runtime adapters use native platform APIs; no Architectury API runtime JAR is required.
 
 ## Build
 
 ```powershell
-.\gradlew.bat clean test remapJar
+.\gradlew.bat buildAll
 ```
 
-The deployable artifact is `build/libs/wWorldMapUtils-<version>.jar` (not the sources JAR).
+Deployable JARs are collected under `build/artifacts`. Source JARs are not deployable. See [platform support and artifact selection](documentation/PLATFORMS.md) for the complete matrix.
 
 ## Install
 
-- Fabric: put the JAR and Fabric API in the server's `mods` directory.
-- Paper/Folia/Purpur/Leaf: put the same JAR in the server's `plugins` directory.
+- Spigot/Paper/Folia: put the Bukkit JAR in `plugins`.
+- Fabric/Quilt: put the matching Fabric cohort JAR and Fabric API in `mods`.
+- Forge/NeoForge: put the matching native loader JAR in `mods`.
 
-Start once to generate `wworldmap-utils.properties`, edit it, and restart. On Fabric it is stored under `config`; on Bukkit-family servers it is under `plugins/wWorldMapUtils`.
+Start once to generate `wworldmap-utils.properties`, edit it, and restart. Bukkit-family servers store it under `plugins/wWorldMapUtils`; mod loaders store it under `config`.
 
 ```properties
 disable-entire-mod=false
 disabled-features=cave-mode,entity-radar
 ```
 
-Available feature IDs are `entire-mod`, `player-radar`, `entity-radar`, `orbit`, and `cave-mode`. Local client preferences are never overwritten; the server policy is an additional connection-scoped restriction.
+Available feature IDs are `entire-mod`, `player-radar`, `entity-radar`, `orbit`, and `cave-mode`. Local client preferences are never overwritten; server policy is an additional connection-scoped restriction.
 
-See [the protocol specification](documentation/PROTOCOL.md) and [third-party integration guide](documentation/THIRD_PARTY_INTEGRATION.md).
+See the [protocol specification](documentation/PROTOCOL.md), [platform guide](documentation/PLATFORMS.md), and [third-party integration guide](documentation/THIRD_PARTY_INTEGRATION.md).
 
 ## Development servers
 
-Run `runServer.bat`, choose a server implementation and supported Minecraft version, and the script will:
-
-1. resolve the latest build from the project's official API;
-2. rebuild wWorldMap Utils;
-3. install the new JAR into that server directory;
-4. download Fabric API when Fabric is selected;
-5. launch the selected server.
-
-Each selection has an isolated directory under `servers/`.
+`runServer.bat` prepares an isolated 1.21.11 Fabric or Bukkit-family development server under `servers/`, builds the correct artifact, installs it, and launches the selected server. Use loader-native run configurations or a normal test server for the other compatibility cohorts.
