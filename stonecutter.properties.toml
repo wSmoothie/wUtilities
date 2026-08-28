@@ -1,0 +1,85 @@
+mod.id = "wworldmap_utils"
+mod.name = "wWorldMapUtils"
+mod.group = "com.wworldmap"
+mod.version = "0.2.0"
+
+loomx.loom_version = "1.17-SNAPSHOT"
+deps.fabric_loader = "0.18.2"
+deps.quilt_loader = "0.30.0"
+
+[fabric."1.20"]
+deps.fabric_api = "0.83.0+1.20"
+[fabric."1.20.2"]
+deps.fabric_api = "0.91.6+1.20.2"
+[fabric."1.20.3"]
+deps.fabric_api = "0.91.1+1.20.3"
+[fabric."1.20.5"]
+deps.fabric_api = "0.97.8+1.20.5"
+[fabric."1.21"]
+deps.fabric_api = "0.102.0+1.21"
+[fabric."1.21.2"]
+deps.fabric_api = "0.106.1+1.21.2"
+[fabric."1.21.5"]
+deps.fabric_api = "0.128.2+1.21.5"
+[fabric."1.21.6"]
+deps.fabric_api = "0.128.2+1.21.6"
+[fabric."1.21.9"]
+deps.fabric_api = "0.134.1+1.21.9"
+[fabric."1.21.11"]
+deps.fabric_api = "0.141.6+1.21.11"
+[fabric."26.1.2"]
+deps.fabric_loader = "0.19.3"
+deps.fabric_api = "0.155.2+26.1.2"
+[fabric."26.2"]
+deps.fabric_loader = "0.19.3"
+deps.fabric_api = "0.158.0+26.2"
+
+[neoforge."1.20.2"]
+loom.platform = "neoforge"
+deps.neoforge = "20.2.93"
+[neoforge."1.20.3"]
+loom.platform = "neoforge"
+deps.neoforge = "20.3.8-beta"
+[neoforge."1.20.5"]
+loom.platform = "neoforge"
+deps.neoforge = "20.5.21-beta"
+[neoforge."1.21"]
+loom.platform = "neoforge"
+deps.neoforge = "21.0.167"
+[neoforge."1.21.2"]
+loom.platform = "neoforge"
+deps.neoforge = "21.2.1-beta"
+[neoforge."1.21.5"]
+loom.platform = "neoforge"
+deps.neoforge = "21.5.98"
+[neoforge."1.21.6"]
+loom.platform = "neoforge"
+deps.neoforge = "21.6.20-beta"
+[neoforge."1.21.9"]
+loom.platform = "neoforge"
+deps.neoforge = "21.9.16-beta"
+[neoforge."1.21.11"]
+loom.platform = "neoforge"
+deps.neoforge = "21.11.45"
+[neoforge."26.1.2"]
+loom.platform = "neoforge"
+deps.neoforge = "26.1.2.97"
+[neoforge."26.2"]
+loom.platform = "neoforge"
+deps.neoforge = "26.2.0.63"
+
+[forge."1.20.1"]
+loom.platform = "forge"
+deps.forge = "47.4.23"
+[forge."1.21.1"]
+loom.platform = "forge"
+deps.forge = "52.1.16"
+[forge."1.21.11"]
+loom.platform = "forge"
+deps.forge = "61.2.1"
+[forge."26.1.2"]
+loom.platform = "forge"
+deps.forge = "64.1.2"
+[forge."26.2"]
+loom.platform = "forge"
+deps.forge = "65.1.2"

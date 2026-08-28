@@ -159,10 +159,16 @@ $kind = [string](Select-MenuItem 'Choose a server implementation:' $ServerKinds)
 $version = [string](Select-MenuItem 'Choose a supported Minecraft version:' @($Support.minecraft))
 Write-Host ''
 Write-Host 'Building wWorldMap Utils...'
-& (Join-Path $RepoRoot 'gradlew.bat') clean test remapJar
+$artifactRoot = if ($kind -eq 'fabric') {
+    & (Join-Path $RepoRoot 'gradlew.bat') ':1.21.11-fabric:test' ':1.21.11-fabric:remapJar' '--configure-on-demand'
+    Join-Path $RepoRoot 'versions\1.21.11-fabric\build\libs'
+} else {
+    & (Join-Path $RepoRoot 'gradlew.bat') ':bukkit:test' ':bukkit:jar' '--configure-on-demand'
+    Join-Path $RepoRoot 'platform\bukkit\build\libs'
+}
 if ($LASTEXITCODE -ne 0) { throw "Gradle build failed with exit code $LASTEXITCODE." }
 
-$artifact = Get-ChildItem -LiteralPath (Join-Path $RepoRoot 'build\libs') -Filter 'wWorldMapUtils-*.jar' |
+$artifact = Get-ChildItem -LiteralPath $artifactRoot -Filter 'wWorldMapUtils*.jar' |
     Where-Object { $_.Name -notmatch '-sources\.jar$' } | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 if ($null -eq $artifact) { throw 'Built wWorldMap Utils JAR was not found.' }
 

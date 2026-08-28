@@ -52,7 +52,7 @@ public final class WorldMapUtilsPlugin extends JavaPlugin implements Listener {
 
 	private void sendPolicy(org.bukkit.entity.Player player) {
 		FeaturePolicy currentPolicy = policy;
-		if (player == null || currentPolicy == null || !player.isConnected()) return;
+		if (player == null || currentPolicy == null || !player.isOnline()) return;
 		player.sendPluginMessage(this, PolicyProtocol.CHANNEL,
 			PolicyProtocol.encode(currentPolicy.disabledMask()));
 	}
