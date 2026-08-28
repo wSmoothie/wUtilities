@@ -1,5 +1,7 @@
 # wWorldMap Utils
 
+![wWorldMap Utils logo](src/main/resources/icon.png)
+
 wWorldMap Utils lets a Minecraft server disable all of wWorldMap or selected client features. It supports Minecraft 1.20 and newer through platform-specific artifacts:
 
 - Bukkit: Spigot, Paper, and Folia (also compatible derivatives such as Purpur and Leaf);
