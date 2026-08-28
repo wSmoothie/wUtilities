@@ -28,26 +28,26 @@ final class PolicyConfigTest {
 	@Test
 	void parsesEntireModAndIndividualFeatureNames() throws Exception {
 		Path path = temporaryDirectory.resolve(PolicyConfig.FILE_NAME);
-		Files.writeString(path, "disable-entire-mod=true\ndisabled-features=minimap, cave-view\n");
+		Files.writeString(path, "disable-entire-mod=true\ndisabled-features=player-radar, cave-mode\n");
 
 		FeaturePolicy policy = PolicyConfig.load(path, null);
 
 		assertTrue(policy.disables(WorldMapFeature.ENTIRE_MOD));
-		assertTrue(policy.disables(WorldMapFeature.MINIMAP));
-		assertTrue(policy.disables(WorldMapFeature.CAVE_VIEW));
+		assertTrue(policy.disables(WorldMapFeature.PLAYER_RADAR));
+		assertTrue(policy.disables(WorldMapFeature.CAVE_MODE));
 		assertFalse(policy.disables(WorldMapFeature.ENTITY_RADAR));
 	}
 
 	@Test
 	void warnsAndIgnoresUnknownFeaturesAndInvalidBooleans() throws Exception {
 		Path path = temporaryDirectory.resolve(PolicyConfig.FILE_NAME);
-		Files.writeString(path, "disable-entire-mod=maybe\ndisabled-features=minimap,unknown\n");
+		Files.writeString(path, "disable-entire-mod=maybe\ndisabled-features=orbit,unknown\n");
 		var warnings = new ArrayList<String>();
 
 		FeaturePolicy policy = PolicyConfig.load(path, warnings::add);
 
 		assertFalse(policy.disables(WorldMapFeature.ENTIRE_MOD));
-		assertTrue(policy.disables(WorldMapFeature.MINIMAP));
+		assertTrue(policy.disables(WorldMapFeature.ORBIT));
 		assertTrue(warnings.size() == 2);
 	}
 }

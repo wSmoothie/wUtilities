@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test;
 final class PolicyProtocolTest {
 	@Test
 	void encodesVersionAndSingleByteMask() {
-		assertArrayEquals(new byte[] {1, 0x55}, PolicyProtocol.encode(0x55));
+		assertArrayEquals(new byte[] {2, 0x15}, PolicyProtocol.encode(0x15));
 	}
 
 	@Test
 	void encodesMinecraftUnsignedVarInts() {
-		assertArrayEquals(new byte[] {1, (byte)0xAC, 0x02}, PolicyProtocol.encode(300));
+		assertArrayEquals(new byte[] {2, (byte)0xAC, 0x02}, PolicyProtocol.encode(300));
 	}
 }

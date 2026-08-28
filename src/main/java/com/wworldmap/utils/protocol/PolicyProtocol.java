@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 
 public final class PolicyProtocol {
 	public static final String CHANNEL = "wworldmap:policy";
-	public static final int VERSION = 1;
+	public static final int VERSION = 2;
 
 	private PolicyProtocol() {}
 

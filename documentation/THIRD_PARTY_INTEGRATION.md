@@ -15,7 +15,7 @@ public void onEnable() {
     getServer().getPluginManager().registerEvents(new Listener() {
         @EventHandler(priority = EventPriority.MONITOR)
         public void onJoin(PlayerJoinEvent event) {
-            int disabledMask = 0x04 | 0x10; // minimap + entity-radar
+            int disabledMask = 0x02 | 0x04; // player-radar + entity-radar
             event.getPlayer().sendPluginMessage(
                 MyPlugin.this, CHANNEL, encodePolicy(disabledMask));
         }
@@ -25,7 +25,7 @@ public void onEnable() {
 private static byte[] encodePolicy(int disabledMask) {
     if (disabledMask < 0) throw new IllegalArgumentException("negative mask");
     ByteArrayOutputStream out = new ByteArrayOutputStream(6);
-    out.write(1); // protocol version
+    out.write(2); // protocol version
     do {
         int next = disabledMask & 0x7F;
         disabledMask >>>= 7;
@@ -40,7 +40,7 @@ Call `unregisterOutgoingPluginChannel` from `onDisable` if your plugin owns the 
 
 ## Fabric example
 
-Define a `CustomPacketPayload` whose codec writes an unsigned byte with value `1`, followed by the disabled-mask VarInt. Register it with `PayloadTypeRegistry.playS2C()` during mod initialization. At `ServerPlayConnectionEvents.JOIN`, check `ServerPlayNetworking.canSend(player, TYPE)` before sending so clients without the receiver are left alone.
+Define a `CustomPacketPayload` whose codec writes an unsigned byte with value `2`, followed by the disabled-mask VarInt. Register it with `PayloadTypeRegistry.playS2C()` during mod initialization. At `ServerPlayConnectionEvents.JOIN`, check `ServerPlayNetworking.canSend(player, TYPE)` before sending so clients without the receiver are left alone.
 
 ```java
 ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {

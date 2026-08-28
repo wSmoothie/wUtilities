@@ -13,8 +13,7 @@ public final class PolicyConfig {
 	public static final String FILE_NAME = "wworldmap-utils.properties";
 	private static final String DEFAULT_TEXT = """
 		# wWorldMap Utils server policy
-		# Valid feature IDs: entire-mod, world-map, minimap, cave-view,
-		# entity-radar, waypoint-integration, detached-window
+		# Valid feature IDs: entire-mod, player-radar, entity-radar, orbit, cave-mode
 		disable-entire-mod=false
 		disabled-features=
 		""";

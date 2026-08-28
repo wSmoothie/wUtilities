@@ -24,10 +24,10 @@ Start once to generate `wworldmap-utils.properties`, edit it, and restart. On Fa
 
 ```properties
 disable-entire-mod=false
-disabled-features=cave-view,entity-radar
+disabled-features=cave-mode,entity-radar
 ```
 
-Available feature IDs are `entire-mod`, `world-map`, `minimap`, `cave-view`, `entity-radar`, `waypoint-integration`, and `detached-window`. Local client preferences are never overwritten; the server policy is an additional connection-scoped restriction.
+Available feature IDs are `entire-mod`, `player-radar`, `entity-radar`, `orbit`, and `cave-mode`. Local client preferences are never overwritten; the server policy is an additional connection-scoped restriction.
 
 See [the protocol specification](documentation/PROTOCOL.md) and [third-party integration guide](documentation/THIRD_PARTY_INTEGRATION.md).
 
