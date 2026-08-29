@@ -20,6 +20,12 @@ final class PolicyConfigTest {
 		FeaturePolicy policy = PolicyConfig.load(path, null);
 
 		assertTrue(Files.isRegularFile(path));
+		String generatedConfig = Files.readString(path);
+		assertTrue(generatedConfig.contains("disable-entire-mod=false"));
+		assertTrue(generatedConfig.contains("disabled-features="));
+		for (WorldMapFeature feature : WorldMapFeature.values()) {
+			assertTrue(generatedConfig.contains(feature.id()));
+		}
 		for (WorldMapFeature feature : WorldMapFeature.values()) {
 			assertFalse(policy.disables(feature));
 		}

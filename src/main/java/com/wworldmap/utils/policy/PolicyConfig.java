@@ -13,8 +13,28 @@ public final class PolicyConfig {
 	public static final String FILE_NAME = "wworldmap-utils.properties";
 	private static final String DEFAULT_TEXT = """
 		# wWorldMap Utils server policy
-		# Valid feature IDs: entire-mod, player-radar, entity-radar, orbit, cave-mode
+		#
+		# These settings restrict wWorldMap features while players are connected
+		# to this server. Restart the server after changing this file.
+
+		# Disable every wWorldMap feature.
+		# true  = completely disable wWorldMap
+		# false = allow wWorldMap, except features listed below
 		disable-entire-mod=false
+
+		# Comma-separated feature IDs to disable.
+		# Leave empty to allow every feature.
+		#
+		# Available feature IDs:
+		# entire-mod   - Disable all wWorldMap behavior.
+		# player-radar - Hide other players from the map.
+		#                 The local player's marker remains visible.
+		# entity-radar - Hide mobs and other non-player entities.
+		# orbit        - Disable orbit views and force maps into top-down view.
+		# cave-mode    - Disable cave mode and level-cut functionality.
+		#
+		# Example:
+		# disabled-features=player-radar,entity-radar,orbit
 		disabled-features=
 		""";
 

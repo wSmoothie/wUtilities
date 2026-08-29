@@ -1,7 +1,7 @@
 mod.id = "wworldmap_utils"
 mod.name = "wWorldMapUtils"
 mod.group = "com.wworldmap"
-mod.version = "0.2.0"
+mod.version = "0.1.0"
 
 loomx.loom_version = "1.17-SNAPSHOT"
 deps.fabric_loader = "0.18.2"
