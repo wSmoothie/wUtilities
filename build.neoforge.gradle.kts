@@ -7,13 +7,13 @@ val mcRange = extra["compatibility.minecraftRange"] as String
 val archiveVersion = extra["compatibility.archiveVersion"] as String
 version = "${project.property("mod.version")}+$archiveVersion"
 group = project.property("mod.group") as String
-base.archivesName = "wWorldMapUtils ${project.property("mod.version")} NeoForge $archiveVersion"
+base.archivesName = "wUtilities ${project.property("mod.version")} NeoForge $archiveVersion"
 val requiredJava = if (sc.current.parsed >= "1.20.5") JavaVersion.VERSION_21 else JavaVersion.VERSION_17
 sourceSets.main { java.exclude("com/wworldmap/utils/paper/**") }
 
 repositories { maven("https://maven.neoforged.net/releases/"); mavenCentral() }
 
-loom { mods { register("wworldmap_utils") { sourceSet(sourceSets.main.get()) } } }
+loom { mods { register("wutilities") { sourceSet(sourceSets.main.get()) } } }
 dependencies {
     minecraft("com.mojang:minecraft:${sc.current.version}")
     mappings(loom.officialMojangMappings())

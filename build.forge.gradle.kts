@@ -4,12 +4,12 @@ plugins { id("dev.architectury.loom") }
 
 version = "${project.property("mod.version")}+mc${sc.current.version}"
 group = project.property("mod.group") as String
-base.archivesName = "wWorldMapUtils ${project.property("mod.version")} Forge ${sc.current.version}"
+base.archivesName = "wUtilities ${project.property("mod.version")} Forge ${sc.current.version}"
 val requiredJava = if (sc.current.parsed >= "1.20.5") JavaVersion.VERSION_21 else JavaVersion.VERSION_17
 sourceSets.main { java.exclude("com/wworldmap/utils/paper/**") }
 repositories { maven("https://maven.minecraftforge.net/"); mavenCentral() }
 
-loom { mods { register("wworldmap_utils") { sourceSet(sourceSets.main.get()) } } }
+loom { mods { register("wutilities") { sourceSet(sourceSets.main.get()) } } }
 dependencies {
     minecraft("com.mojang:minecraft:${sc.current.version}")
     mappings(loom.officialMojangMappings())

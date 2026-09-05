@@ -15,7 +15,7 @@ Fabric and NeoForge releases use these compatibility cohorts: `1.20-1.20.1`, `1.
 
 ## Compatibility architecture
 
-The policy/configuration core is loader-neutral. Stonecutter generates version-specific source at the API transitions, and Architectury Loom remaps each loader artifact. Runtime entrypoints remain narrow native adapters:
+The dual-policy/configuration core is loader-neutral. Stonecutter generates version-specific source at the API transitions, and Architectury Loom remaps each loader artifact. Runtime entrypoints remain narrow native adapters:
 
 - Bukkit plugin messaging for Spigot/Paper/Folia;
 - Fabric networking for Fabric/Quilt;
@@ -26,4 +26,4 @@ The Bukkit adapter performs no scheduled or world-region work. Join and channel-
 
 ## Validation
 
-`buildAll` compiles, tests, remaps/packages, and collects every release artifact. Compilation establishes API compatibility; it does not by itself prove a live server startup. Runtime release testing should cover one clean server per artifact cohort, a vanilla client, a protocol-v2 wWorldMap client, disconnect/reset behavior, and Folia multi-region joins before publishing a release as runtime-tested.
+`buildAll` compiles, tests, remaps/packages, and collects every release artifact. Compilation establishes API compatibility; it does not by itself prove a live server startup. Runtime release testing should cover one clean server per artifact cohort, a vanilla client, a protocol-v2 wWorldMap client, a protocol-v1 wWaypoints client, disconnect/reset behavior, and Folia multi-region joins before publishing a release as runtime-tested.

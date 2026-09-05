@@ -3,7 +3,7 @@ Set-StrictMode -Version 2.0
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $Support = Get-Content -Raw -LiteralPath (Join-Path $RepoRoot 'supported-versions.json') | ConvertFrom-Json
-$UserAgent = 'wWorldMapUtils-launcher/0.1 (https://github.com/wSmoothie/wWorldMapUtils)'
+$UserAgent = 'wUtilities-launcher/0.2 (https://github.com/wSmoothie/wUtilities)'
 $Headers = @{ 'User-Agent' = $UserAgent }
 $ServerKinds = @('fabric', 'paper', 'folia', 'purpur', 'leaf')
 
@@ -158,7 +158,7 @@ function Confirm-Eula([string]$ServerDirectory) {
 $kind = [string](Select-MenuItem 'Choose a server implementation:' $ServerKinds)
 $version = [string](Select-MenuItem 'Choose a supported Minecraft version:' @($Support.minecraft))
 Write-Host ''
-Write-Host 'Building wWorldMap Utils...'
+Write-Host 'Building wUtilities...'
 $artifactRoot = if ($kind -eq 'fabric') {
     & (Join-Path $RepoRoot 'gradlew.bat') ':1.21.11-fabric:test' ':1.21.11-fabric:remapJar' '--configure-on-demand'
     Join-Path $RepoRoot 'versions\1.21.11-fabric\build\libs'
@@ -168,9 +168,9 @@ $artifactRoot = if ($kind -eq 'fabric') {
 }
 if ($LASTEXITCODE -ne 0) { throw "Gradle build failed with exit code $LASTEXITCODE." }
 
-$artifact = Get-ChildItem -LiteralPath $artifactRoot -Filter 'wWorldMapUtils*.jar' |
+$artifact = Get-ChildItem -LiteralPath $artifactRoot -Filter 'wUtilities*.jar' |
     Where-Object { $_.Name -notmatch '-sources\.jar$' } | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-if ($null -eq $artifact) { throw 'Built wWorldMap Utils JAR was not found.' }
+if ($null -eq $artifact) { throw 'Built wUtilities JAR was not found.' }
 
 $serverDirectory = Join-Path $RepoRoot ("servers\$kind-$version")
 New-Item -ItemType Directory -Force -Path $serverDirectory | Out-Null
@@ -188,9 +188,9 @@ if ($kind -eq 'fabric') {
 }
 
 New-Item -ItemType Directory -Force -Path $installDirectory | Out-Null
-Get-ChildItem -LiteralPath $installDirectory -Filter 'wWorldMapUtils*.jar' -ErrorAction SilentlyContinue |
+Get-ChildItem -LiteralPath $installDirectory -Filter 'wUtilities*.jar' -ErrorAction SilentlyContinue |
     Remove-Item -Force
-Copy-Item -LiteralPath $artifact.FullName -Destination (Join-Path $installDirectory 'wWorldMapUtils.jar')
+Copy-Item -LiteralPath $artifact.FullName -Destination (Join-Path $installDirectory 'wUtilities.jar')
 if (-not (Confirm-Eula $serverDirectory)) { exit 0 }
 
 Write-Host ''

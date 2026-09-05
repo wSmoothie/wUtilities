@@ -1,12 +1,14 @@
 //? if forge {
 /*package com.wworldmap.utils.forge;
 
-import com.wworldmap.utils.policy.FeaturePolicy;
 import com.wworldmap.utils.policy.PolicyConfig;
+import com.wworldmap.utils.policy.UtilityPolicy;
 //? if <1.20.5
 import com.wworldmap.utils.protocol.LegacyPolicyPacket;
 //? if >=1.20.5
 import com.wworldmap.utils.protocol.ModPolicyPayload;
+//? if >=1.20.5
+import com.wworldmap.utils.protocol.WaypointsPolicyPayload;
 import java.io.IOException;
 import java.nio.file.Path;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,12 +32,14 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Mod("wworldmap_utils")
+@Mod("wutilities")
 public final class WorldMapUtilsForge {
-	private static final Logger LOGGER = LoggerFactory.getLogger("wworldmap_utils");
-	private final FeaturePolicy policy;
+	private static final Logger LOGGER = LoggerFactory.getLogger("wutilities");
+	private final UtilityPolicy policy;
 	//? if >=1.20.5
 	private final Channel<CustomPacketPayload> channel;
+	//? if >=1.20.5
+	private final Channel<CustomPacketPayload> waypointsChannel;
 
 	//? if <1.20.5 {
 	/^public WorldMapUtilsForge() {
@@ -55,9 +59,11 @@ public final class WorldMapUtilsForge {
 		IEventBus ignored
 	) {
 		try {
-			policy = PolicyConfig.load(Path.of("config").resolve(PolicyConfig.FILE_NAME), LOGGER::warn);
+			Path configDirectory = Path.of("config");
+			policy = PolicyConfig.load(configDirectory.resolve(PolicyConfig.FILE_NAME),
+				configDirectory.resolve(PolicyConfig.LEGACY_FILE_NAME), LOGGER::warn);
 		} catch (IOException exception) {
-			throw new IllegalStateException("Could not load wWorldMap Utils policy", exception);
+			throw new IllegalStateException("Could not load wUtilities policy", exception);
 		}
 		//? if >=1.20.5 {
 		channel = ChannelBuilder.named(ModPolicyPayload.TYPE.id())
@@ -65,21 +71,33 @@ public final class WorldMapUtilsForge {
 			.protocol(NetworkProtocol.PLAY).flow(PacketFlow.CLIENTBOUND)
 			.add(ModPolicyPayload.TYPE, ModPolicyPayload.CODEC, (payload, context) -> {})
 			.build();
+		waypointsChannel = ChannelBuilder.named(WaypointsPolicyPayload.TYPE.id())
+			.networkProtocolVersion(1).optional().payloadChannel()
+			.protocol(NetworkProtocol.PLAY).flow(PacketFlow.CLIENTBOUND)
+			.add(WaypointsPolicyPayload.TYPE, WaypointsPolicyPayload.CODEC, (payload, context) -> {})
+			.build();
 		//?}
 		//? if <1.21.11
 		MinecraftForge.EVENT_BUS.addListener(this::onPlayerLoggedIn);
 		//? if >=1.21.11
 		//PlayerEvent.PlayerLoggedInEvent.BUS.addListener(this::onPlayerLoggedIn);
-		LOGGER.info("wWorldMap Utils enabled on Forge; disabledFeatures={}", policy.disabledFeatureIds());
+		LOGGER.info("wUtilities enabled on Forge; disabledWorldMapFeatures={}; disabledWaypointsFeatures={}",
+			policy.worldMap().disabledFeatureIds(), policy.waypoints().disabledFeatureIds());
 	}
 
 	private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
 		if (!(event.getEntity() instanceof ServerPlayer player)) return;
 		//? if <1.20.5
-		LegacyPolicyPacket.send(player, policy.disabledMask());
+		LegacyPolicyPacket.sendWorldMap(player, policy.worldMap().disabledMask());
+		//? if <1.20.5
+		LegacyPolicyPacket.sendWaypoints(player, policy.waypoints().disabledMask());
 		//? if >=1.20.5 {
 		if (channel.isRemotePresent(player.connection.getConnection())) {
-			channel.send(new ModPolicyPayload(policy.disabledMask()), player.connection.getConnection());
+			channel.send(new ModPolicyPayload(policy.worldMap().disabledMask()), player.connection.getConnection());
+		}
+		if (waypointsChannel.isRemotePresent(player.connection.getConnection())) {
+			waypointsChannel.send(new WaypointsPolicyPayload(policy.waypoints().disabledMask()),
+				player.connection.getConnection());
 		}
 		//?}
 	}

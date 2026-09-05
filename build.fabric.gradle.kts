@@ -7,7 +7,7 @@ val mcRange = extra["compatibility.minecraftRange"] as String
 val archiveVersion = extra["compatibility.archiveVersion"] as String
 version = "${project.property("mod.version")}+$archiveVersion"
 group = project.property("mod.group") as String
-base.archivesName = "wWorldMapUtils ${project.property("mod.version")} Fabric $archiveVersion"
+base.archivesName = "wUtilities ${project.property("mod.version")} Fabric $archiveVersion"
 
 val requiredJava = when {
     sc.current.parsed >= "26.1" -> JavaVersion.VERSION_25
@@ -16,7 +16,7 @@ val requiredJava = when {
 }
 sourceSets.main { java.exclude("com/wworldmap/utils/paper/**") }
 
-loom { mods { register("wworldmap_utils") { sourceSet(sourceSets.main.get()) } } }
+loom { mods { register("wutilities") { sourceSet(sourceSets.main.get()) } } }
 
 dependencies {
     minecraft("com.mojang:minecraft:${sc.current.version}")

@@ -1,42 +1,54 @@
-# wWorldMap server policy protocol
+# wUtilities server policy protocols
 
-## Transport
+## Common transport and framing
 
-- Channel: `wworldmap:policy`
-- Direction: server to client
-- Minecraft phase: play
-- Delivery: send after the player joins and again whenever a server changes its policy
-- Maximum version 2 payload size: 6 bytes
-
-The payload is connection-scoped. wWorldMap resets to unrestricted local behavior when it disconnects. A server that never sends this payload does not restrict anything.
-
-## Version 2 payload
+Both policies are server-to-client play-phase payloads sent after join and whenever policy changes. Each payload has exactly two fields and a maximum encoded size of 6 bytes:
 
 | Offset | Type | Meaning |
 | --- | --- | --- |
-| 0 | unsigned byte | Protocol version, currently `2` |
+| 0 | unsigned byte | Protocol version |
 | 1 | Minecraft unsigned VarInt | Bitmask of disabled features |
 
-Version 2 senders must not append fields. Receivers should ignore unknown feature bits so a newer server does not break an older client. The official client ignores malformed payloads and unsupported protocol versions without replacing the last valid policy.
+Senders must not append fields. Receivers ignore unknown feature bits so newer servers remain compatible with older clients. Malformed payloads and unsupported versions must not replace the last valid policy. Negative masks are invalid.
 
-Minecraft VarInt encoding writes seven value bits per byte, least-significant group first, and sets bit 7 when another byte follows. Negative masks are invalid.
+Policies are connection-scoped. Each client resets to unrestricted local behavior on disconnect. A server that never sends a channel does not restrict that mod.
 
-## Feature bits
+## wWorldMap policy
+
+- Channel: `wworldmap:policy`
+- Protocol version: `2`
+
+This protocol and its existing bit assignments are unchanged.
 
 | Bit | Mask | Configuration ID | Effect |
 | ---: | ---: | --- | --- |
 | 0 | `0x01` | `entire-mod` | Disable all wWorldMap behavior for this connection. |
-| 1 | `0x02` | `player-radar` | Hide other-player markers. The local player's marker remains available. |
+| 1 | `0x02` | `player-radar` | Hide other-player markers; retain the local player marker. |
 | 2 | `0x04` | `entity-radar` | Hide non-player entity and mob markers. |
 | 3 | `0x08` | `orbit` | Disable orbit views and force active map/minimap views to top-down. |
 | 4 | `0x10` | `cave-mode` | Force cave mode and level cut off without changing local settings. |
 
-Bit 0 overrides all other bits. A policy disabling player and entity radar, for example, has mask `0x06` and bytes `02 06`.
+A policy disabling player and entity radar has mask `0x06` and bytes `02 06`.
+
+## wWaypoints policy
+
+- Channel: `wwaypoints:policy`
+- Protocol version: `1`
+
+| Bit | Mask | Configuration ID | Effect |
+| ---: | ---: | --- | --- |
+| 0 | `0x01` | `entire-mod` | Disable all wWaypoints behavior and integration for this connection. |
+| 1 | `0x02` | `sneak-modifications` | Disable Toggle Sneak, input overrides, container persistence, and interaction rerouting. |
+| 2 | `0x04` | `death-waypoints` | Disable automatic death-waypoint creation. Existing saved waypoints are not deleted. |
+| 3 | `0x08` | `chat-coordinate-capture` | Disable clickable coordinate decoration and coordinate-to-waypoint capture. |
+| 4 | `0x10` | `hoplite-helpers` | Disable supply-drop recognition and auto-pick waypoint automation. |
+
+Bit 0 overrides every feature-specific bit. `sneak_modifications` and other underscore forms are accepted as configuration aliases, but the canonical IDs use hyphens.
 
 ## Compatibility and trust
 
-- The policy is advisory enforcement implemented by the wWorldMap client. It is not an anti-cheat boundary and cannot control modified clients.
-- Vanilla clients and clients without wWorldMap ignore the channel.
-- Plugin messages use a player's connection. There is no delivery route when no player is connected.
-- Proxies must permit/forward `wworldmap:policy` from the trusted backend to the client.
-- Clients must only accept this policy from their current server connection and must clear it on disconnect.
+- These policies are advisory enforcement implemented by the official clients. They are not an anti-cheat boundary and cannot control modified clients.
+- Vanilla clients and clients without the corresponding mod ignore its channel.
+- Plugin messages use a player's connection; there is no delivery path when no player is connected.
+- Proxies must permit and forward both policy channels from the trusted backend to the client.
+- Clients must only accept policy from their current server connection and clear it on disconnect.

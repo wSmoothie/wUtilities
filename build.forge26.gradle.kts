@@ -4,7 +4,7 @@ plugins { id("dev.architectury.loom-no-remap") }
 
 version = "${project.property("mod.version")}+mc${sc.current.version}"
 group = project.property("mod.group") as String
-base.archivesName = "wWorldMapUtils ${project.property("mod.version")} Forge ${sc.current.version}"
+base.archivesName = "wUtilities ${project.property("mod.version")} Forge ${sc.current.version}"
 sourceSets.main { java.exclude("com/wworldmap/utils/paper/**") }
 repositories { maven("https://maven.minecraftforge.net/"); mavenCentral() }
 dependencies {

@@ -3,22 +3,22 @@ loaderVersion="[3,)"
 license="All Rights Reserved"
 
 [[mods]]
-modId="wworldmap_utils"
+modId="wutilities"
 version="${version}"
-displayName="wWorldMap Utils"
+displayName="wUtilities"
 logoFile="icon.png"
 authors="wSmoothie, literal.uu"
-description='''Lets servers control which wWorldMap client features are available.'''
+description='''Lets servers control which wWorldMap and wWaypoints client features are available.'''
 displayTest="IGNORE_ALL_VERSION"
 
-[[dependencies.wworldmap_utils]]
+[[dependencies.wutilities]]
 modId="neoforge"
 type="required"
 versionRange="[${neoforge_version},)"
 ordering="NONE"
 side="SERVER"
 
-[[dependencies.wworldmap_utils]]
+[[dependencies.wutilities]]
 modId="minecraft"
 type="required"
 versionRange="[${minecraft_version}]"

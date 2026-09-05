@@ -14,4 +14,10 @@ final class PolicyProtocolTest {
 	void encodesMinecraftUnsignedVarInts() {
 		assertArrayEquals(new byte[] {2, (byte)0xAC, 0x02}, PolicyProtocol.encode(300));
 	}
+
+	@Test
+	void preservesWorldMapV2AndAddsIndependentWaypointsV1() {
+		assertArrayEquals(new byte[] {2, 0x06}, PolicyProtocol.encodeWorldMap(0x06));
+		assertArrayEquals(new byte[] {1, 0x12}, PolicyProtocol.encodeWaypoints(0x12));
+	}
 }

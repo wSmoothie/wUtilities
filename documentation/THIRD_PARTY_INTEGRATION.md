@@ -1,6 +1,8 @@
-# Sending wWorldMap policy from another plugin or mod
+# Sending wUtilities policies from another plugin or mod
 
-You do not need to depend on wWorldMap Utils. Implement the two-field protocol in [PROTOCOL.md](PROTOCOL.md) and send it on `wworldmap:policy`.
+You do not need to depend on wUtilities. Implement the applicable two-field protocol in [PROTOCOL.md](PROTOCOL.md) and send it on `wworldmap:policy` or `wwaypoints:policy`.
+
+The example below sends wWorldMap protocol v2. To send wWaypoints policy, use channel `wwaypoints:policy`, version byte `1`, and the wWaypoints bit table from the protocol specification.
 
 ## Bukkit/Paper example
 
@@ -54,12 +56,12 @@ The `PolicyPayload` type ID must be `wworldmap:policy`; its codec must match the
 
 ## Updating a live policy
 
-The official Utils build reads configuration only at startup. A third-party implementation may support live updates. Publish a complete replacement mask to every connected player; masks are snapshots, not patches. Sending mask `0` removes all server restrictions.
+The official wUtilities build reads configuration only at startup. A third-party implementation may support live updates. Publish a complete replacement mask to every connected player; masks are snapshots, not patches. Sending mask `0` removes all server restrictions.
 
 Keep payload generation bounded and deterministic. Do not accept a client-supplied mask as server policy, and do not use this channel for secrets or durable server-to-server messaging.
 
 ## Forge and NeoForge
 
-Minecraft 1.20.5 and newer use the typed `CustomPacketPayload` form of this protocol. Register the clientbound play payload as optional, use the exact `wworldmap:policy` type and version-2 codec, and send only when the remote connection advertises the channel. Forge and NeoForge use different native registration and distribution APIs; do not make either loader depend on the other's classes.
+Minecraft 1.20.5 and newer use the typed `CustomPacketPayload` form of these protocols. Register each clientbound play payload as optional, use the exact channel and matching version codec, and send only when the remote connection advertises that channel. Forge and NeoForge use different native registration and distribution APIs; do not make either loader depend on the other's classes.
 
-Minecraft 1.20.1 Forge and 1.20.2-1.20.4 NeoForge use the legacy custom-payload form. The bytes remain identical (`02`, then the disabled-mask VarInt), but the vanilla packet package/constructor changes at 1.20.2. Keep that compatibility edge isolated instead of reflecting across packet classes.
+Minecraft 1.20.1 Forge and 1.20.2-1.20.4 NeoForge use the legacy custom-payload form. The framing remains identical (a protocol byte, then the disabled-mask VarInt), but the vanilla packet package/constructor changes at 1.20.2. Keep that compatibility edge isolated instead of reflecting across packet classes.

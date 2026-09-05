@@ -13,7 +13,7 @@ $WaypointsRoot = Join-Path $WorkspaceRoot 'wWaypoints'
 $MinecraftVersion = '1.21.11'
 $ModsDirectory = Join-Path $WorldMapRoot 'run\mods'
 $ManifestPath = Join-Path $ModsDirectory '.runClient-modrinth-files.json'
-$Headers = @{ 'User-Agent' = 'wWorldMapUtils-client-launcher/0.1 (https://github.com/wSmoothie/wWorldMapUtils)' }
+$Headers = @{ 'User-Agent' = 'wUtilities-client-launcher/0.2 (https://github.com/wSmoothie/wUtilities)' }
 $InstalledProjects = @{}
 $DownloadedFiles = New-Object System.Collections.Generic.List[string]
 

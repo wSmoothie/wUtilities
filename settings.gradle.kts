@@ -46,4 +46,4 @@ stonecutter {
 
 include("bukkit")
 project(":bukkit").projectDir = file("platform/bukkit")
-rootProject.name = "wWorldMapUtils"
+rootProject.name = "wUtilities"

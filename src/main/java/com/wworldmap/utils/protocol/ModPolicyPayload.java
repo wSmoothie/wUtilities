@@ -16,12 +16,12 @@ public record ModPolicyPayload(int disabledMask) implements CustomPacketPayload 
 		public ModPolicyPayload decode(RegistryFriendlyByteBuf buffer) {
 			int version = buffer.readUnsignedByte();
 			int mask = buffer.readVarInt();
-			return new ModPolicyPayload(version == PolicyProtocol.VERSION && mask >= 0 ? mask : 0);
+			return new ModPolicyPayload(version == PolicyProtocol.WORLD_MAP_VERSION && mask >= 0 ? mask : 0);
 		}
 
 		@Override
 		public void encode(RegistryFriendlyByteBuf buffer, ModPolicyPayload payload) {
-			buffer.writeByte(PolicyProtocol.VERSION);
+			buffer.writeByte(PolicyProtocol.WORLD_MAP_VERSION);
 			buffer.writeVarInt(payload.disabledMask);
 		}
 	};

@@ -17,43 +17,61 @@ final class PolicyConfigTest {
 	void createsAnUnrestrictedDefaultConfiguration() throws Exception {
 		Path path = temporaryDirectory.resolve(PolicyConfig.FILE_NAME);
 
-		FeaturePolicy policy = PolicyConfig.load(path, null);
+		UtilityPolicy policy = PolicyConfig.load(path, null);
 
 		assertTrue(Files.isRegularFile(path));
 		String generatedConfig = Files.readString(path);
-		assertTrue(generatedConfig.contains("disable-entire-mod=false"));
-		assertTrue(generatedConfig.contains("disabled-features="));
-		for (WorldMapFeature feature : WorldMapFeature.values()) {
-			assertTrue(generatedConfig.contains(feature.id()));
-		}
-		for (WorldMapFeature feature : WorldMapFeature.values()) {
-			assertFalse(policy.disables(feature));
-		}
+		assertTrue(generatedConfig.contains("disable-wworldmap=false"));
+		assertTrue(generatedConfig.contains("disabled-wwaypoints-features="));
+		for (WorldMapFeature feature : WorldMapFeature.values()) assertFalse(policy.worldMap().disables(feature));
+		for (WaypointsFeature feature : WaypointsFeature.values()) assertFalse(policy.waypoints().disables(feature));
 	}
 
 	@Test
-	void parsesEntireModAndIndividualFeatureNames() throws Exception {
+	void parsesBothPolicyMasksAndUnderscoreAliases() throws Exception {
 		Path path = temporaryDirectory.resolve(PolicyConfig.FILE_NAME);
-		Files.writeString(path, "disable-entire-mod=true\ndisabled-features=player-radar, cave-mode\n");
+		Files.writeString(path, """
+			disable-wworldmap=true
+			disabled-wworldmap-features=player-radar, cave-mode
+			disable-wwaypoints=false
+			disabled-wwaypoints-features=sneak_modifications, hoplite-helpers
+			""");
 
-		FeaturePolicy policy = PolicyConfig.load(path, null);
+		UtilityPolicy policy = PolicyConfig.load(path, null);
 
-		assertTrue(policy.disables(WorldMapFeature.ENTIRE_MOD));
-		assertTrue(policy.disables(WorldMapFeature.PLAYER_RADAR));
-		assertTrue(policy.disables(WorldMapFeature.CAVE_MODE));
-		assertFalse(policy.disables(WorldMapFeature.ENTITY_RADAR));
+		assertTrue(policy.worldMap().disables(WorldMapFeature.ENTIRE_MOD));
+		assertTrue(policy.worldMap().disables(WorldMapFeature.PLAYER_RADAR));
+		assertTrue(policy.worldMap().disables(WorldMapFeature.CAVE_MODE));
+		assertTrue(policy.waypoints().disables(WaypointsFeature.SNEAK_MODIFICATIONS));
+		assertTrue(policy.waypoints().disables(WaypointsFeature.HOPLITE_HELPERS));
+		assertFalse(policy.waypoints().disables(WaypointsFeature.DEATH_WAYPOINTS));
+	}
+
+	@Test
+	void migratesLegacyFileAndKeysWithoutChangingWorldMapPolicy() throws Exception {
+		Path current = temporaryDirectory.resolve(PolicyConfig.FILE_NAME);
+		Path legacy = temporaryDirectory.resolve(PolicyConfig.LEGACY_FILE_NAME);
+		Files.writeString(legacy, "disable-entire-mod=true\ndisabled-features=entity-radar\n");
+		var warnings = new ArrayList<String>();
+
+		UtilityPolicy policy = PolicyConfig.load(current, legacy, warnings::add);
+
+		assertTrue(Files.isRegularFile(current));
+		assertTrue(policy.worldMap().disables(WorldMapFeature.ENTIRE_MOD));
+		assertTrue(policy.worldMap().disables(WorldMapFeature.ENTITY_RADAR));
+		assertTrue(warnings.stream().anyMatch(message -> message.contains("Migrated legacy")));
 	}
 
 	@Test
 	void warnsAndIgnoresUnknownFeaturesAndInvalidBooleans() throws Exception {
 		Path path = temporaryDirectory.resolve(PolicyConfig.FILE_NAME);
-		Files.writeString(path, "disable-entire-mod=maybe\ndisabled-features=orbit,unknown\n");
+		Files.writeString(path, "disable-wwaypoints=maybe\ndisabled-wwaypoints-features=death-waypoints,unknown\n");
 		var warnings = new ArrayList<String>();
 
-		FeaturePolicy policy = PolicyConfig.load(path, warnings::add);
+		UtilityPolicy policy = PolicyConfig.load(path, warnings::add);
 
-		assertFalse(policy.disables(WorldMapFeature.ENTIRE_MOD));
-		assertTrue(policy.disables(WorldMapFeature.ORBIT));
+		assertFalse(policy.waypoints().disables(WaypointsFeature.ENTIRE_MOD));
+		assertTrue(policy.waypoints().disables(WaypointsFeature.DEATH_WAYPOINTS));
 		assertTrue(warnings.size() == 2);
 	}
 }

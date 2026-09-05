@@ -10,43 +10,51 @@ import java.util.Properties;
 import java.util.function.Consumer;
 
 public final class PolicyConfig {
-	public static final String FILE_NAME = "wworldmap-utils.properties";
+	public static final String FILE_NAME = "wutilities.properties";
+	public static final String LEGACY_FILE_NAME = "wworldmap-utils.properties";
 	private static final String DEFAULT_TEXT = """
-		# wWorldMap Utils server policy
+		# wUtilities server policy
 		#
-		# These settings restrict wWorldMap features while players are connected
+		# These settings restrict client features while players are connected
 		# to this server. Restart the server after changing this file.
 
 		# Disable every wWorldMap feature.
-		# true  = completely disable wWorldMap
-		# false = allow wWorldMap, except features listed below
-		disable-entire-mod=false
+		disable-wworldmap=false
 
-		# Comma-separated feature IDs to disable.
-		# Leave empty to allow every feature.
-		#
-		# Available feature IDs:
-		# entire-mod   - Disable all wWorldMap behavior.
-		# player-radar - Hide other players from the map.
-		#                 The local player's marker remains visible.
-		# entity-radar - Hide mobs and other non-player entities.
-		# orbit        - Disable orbit views and force maps into top-down view.
-		# cave-mode    - Disable cave mode and level-cut functionality.
-		#
-		# Example:
-		# disabled-features=player-radar,entity-radar,orbit
-		disabled-features=
+		# Comma-separated wWorldMap feature IDs to disable.
+		# Available: entire-mod, player-radar, entity-radar, orbit, cave-mode
+		disabled-wworldmap-features=
+
+		# Disable every wWaypoints feature.
+		disable-wwaypoints=false
+
+		# Comma-separated wWaypoints feature IDs to disable.
+		# entire-mod              - Disable all wWaypoints behavior.
+		# sneak-modifications     - Disable Toggle Sneak and all input/interaction changes.
+		# death-waypoints         - Disable automatic death-waypoint creation.
+		# chat-coordinate-capture - Disable clickable/captured chat coordinates.
+		# hoplite-helpers         - Disable supply-drop and auto-pick automation.
+		disabled-wwaypoints-features=
 		""";
 
 	private PolicyConfig() {}
 
-	public static FeaturePolicy load(Path path, Consumer<String> warningSink) throws IOException {
+	public static UtilityPolicy load(Path path, Consumer<String> warningSink) throws IOException {
+		return load(path, null, warningSink);
+	}
+
+	public static UtilityPolicy load(Path path, Path legacyPath, Consumer<String> warningSink) throws IOException {
 		if (path == null) throw new IllegalArgumentException("path must not be null");
 		Consumer<String> warnings = warningSink != null ? warningSink : ignored -> {};
 		if (!Files.exists(path)) {
 			Path parent = path.getParent();
 			if (parent != null) Files.createDirectories(parent);
-			Files.writeString(path, DEFAULT_TEXT, StandardCharsets.UTF_8);
+			if (legacyPath != null && Files.isRegularFile(legacyPath)) {
+				Files.copy(legacyPath, path);
+				warnings.accept("Migrated legacy policy configuration to " + path.getFileName());
+			} else {
+				Files.writeString(path, DEFAULT_TEXT, StandardCharsets.UTF_8);
+			}
 		}
 
 		Properties properties = new Properties();
@@ -54,20 +62,40 @@ public final class PolicyConfig {
 			properties.load(reader);
 		}
 
-		int disabledMask = parseBoolean(properties.getProperty("disable-entire-mod"), false,
-			"disable-entire-mod", warnings) ? WorldMapFeature.ENTIRE_MOD.mask() : 0;
-		String disabledFeatures = properties.getProperty("disabled-features", "");
-		for (String rawId : disabledFeatures.split(",")) {
-			String id = rawId.trim().toLowerCase(Locale.ROOT);
+		int worldMapMask = parseBoolean(first(properties, "disable-wworldmap", "disable-entire-mod"),
+			false, "disable-wworldmap", warnings) ? WorldMapFeature.ENTIRE_MOD.mask() : 0;
+		String worldMapFeatures = first(properties, "disabled-wworldmap-features", "disabled-features");
+		for (String rawId : valueOrEmpty(worldMapFeatures).split(",")) {
+			String id = normalize(rawId);
 			if (id.isEmpty()) continue;
 			var feature = WorldMapFeature.fromId(id);
-			if (feature.isPresent()) {
-				disabledMask |= feature.get().mask();
-			} else {
-				warnings.accept("Unknown disabled feature ID: " + id);
-			}
+			if (feature.isPresent()) worldMapMask |= feature.get().mask();
+			else warnings.accept("Unknown disabled wWorldMap feature ID: " + id);
 		}
-		return new FeaturePolicy(disabledMask);
+
+		int waypointsMask = parseBoolean(properties.getProperty("disable-wwaypoints"),
+			false, "disable-wwaypoints", warnings) ? WaypointsFeature.ENTIRE_MOD.mask() : 0;
+		for (String rawId : valueOrEmpty(properties.getProperty("disabled-wwaypoints-features")).split(",")) {
+			String id = normalize(rawId);
+			if (id.isEmpty()) continue;
+			var feature = WaypointsFeature.fromId(id);
+			if (feature.isPresent()) waypointsMask |= feature.get().mask();
+			else warnings.accept("Unknown disabled wWaypoints feature ID: " + id);
+		}
+
+		return new UtilityPolicy(new FeaturePolicy(worldMapMask), new WaypointsPolicy(waypointsMask));
+	}
+
+	private static String first(Properties properties, String preferred, String legacy) {
+		return properties.containsKey(preferred) ? properties.getProperty(preferred) : properties.getProperty(legacy);
+	}
+
+	private static String valueOrEmpty(String value) {
+		return value != null ? value : "";
+	}
+
+	private static String normalize(String rawId) {
+		return rawId.trim().toLowerCase(Locale.ROOT).replace('_', '-');
 	}
 
 	private static boolean parseBoolean(String raw, boolean fallback, String key,
