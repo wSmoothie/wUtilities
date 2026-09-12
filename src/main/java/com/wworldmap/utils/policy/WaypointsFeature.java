@@ -7,9 +7,8 @@ import java.util.Optional;
 public enum WaypointsFeature {
 	ENTIRE_MOD(0, "entire-mod"),
 	SNEAK_MODIFICATIONS(1, "sneak-modifications"),
-	DEATH_WAYPOINTS(2, "death-waypoints"),
-	CHAT_COORDINATE_CAPTURE(3, "chat-coordinate-capture"),
-	HOPLITE_HELPERS(4, "hoplite-helpers");
+	// Bits 2-4 are retired; never reuse them for a different restriction.
+	SIGN_MODIFICATIONS(5, "sign-modifications");
 
 	private final int mask;
 	private final String id;

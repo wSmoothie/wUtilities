@@ -31,12 +31,12 @@ Start once to generate `wutilities.properties`, edit it, and restart. Bukkit-fam
 disable-wworldmap=false
 disabled-wworldmap-features=cave-mode,entity-radar
 disable-wwaypoints=false
-disabled-wwaypoints-features=sneak-modifications,hoplite-helpers
+disabled-wwaypoints-features=sneak-modifications,sign-modifications
 ```
 
 wWorldMap feature IDs are `entire-mod`, `player-radar`, `entity-radar`, `orbit`, and `cave-mode`.
 
-wWaypoints feature IDs are `entire-mod`, `sneak-modifications`, `death-waypoints`, `chat-coordinate-capture`, and `hoplite-helpers`. Underscores are accepted as aliases in configuration. Local client preferences are never overwritten; server policy is an additional connection-scoped restriction.
+wWaypoints feature IDs are `entire-mod`, `sneak-modifications`, and `sign-modifications`. Underscores are accepted as aliases in configuration. Removed death-waypoint, chat-coordinate, and Hoplite feature IDs are ignored with a warning; remove them from existing configuration files. Local client preferences are never overwritten; server policy is an additional connection-scoped restriction.
 
 The existing wWorldMap protocol remains version 2 on `wworldmap:policy`. The independent wWaypoints protocol is version 1 on `wwaypoints:policy`. See the [protocol specification](documentation/PROTOCOL.md), [platform guide](documentation/PLATFORMS.md), and [third-party integration guide](documentation/THIRD_PARTY_INTEGRATION.md).
 

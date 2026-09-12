@@ -18,6 +18,6 @@ final class PolicyProtocolTest {
 	@Test
 	void preservesWorldMapV2AndAddsIndependentWaypointsV1() {
 		assertArrayEquals(new byte[] {2, 0x06}, PolicyProtocol.encodeWorldMap(0x06));
-		assertArrayEquals(new byte[] {1, 0x12}, PolicyProtocol.encodeWaypoints(0x12));
+		assertArrayEquals(new byte[] {1, 0x22}, PolicyProtocol.encodeWaypoints(0x22));
 	}
 }

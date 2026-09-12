@@ -1,6 +1,7 @@
 package com.wworldmap.utils.policy;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
@@ -23,6 +24,10 @@ final class PolicyConfigTest {
 		String generatedConfig = Files.readString(path);
 		assertTrue(generatedConfig.contains("disable-wworldmap=false"));
 		assertTrue(generatedConfig.contains("disabled-wwaypoints-features="));
+		assertTrue(generatedConfig.contains("sign-modifications"));
+		assertFalse(generatedConfig.contains("death-waypoints"));
+		assertFalse(generatedConfig.contains("chat-coordinate-capture"));
+		assertFalse(generatedConfig.contains("hoplite-helpers"));
 		for (WorldMapFeature feature : WorldMapFeature.values()) assertFalse(policy.worldMap().disables(feature));
 		for (WaypointsFeature feature : WaypointsFeature.values()) assertFalse(policy.waypoints().disables(feature));
 	}
@@ -34,7 +39,7 @@ final class PolicyConfigTest {
 			disable-wworldmap=true
 			disabled-wworldmap-features=player-radar, cave-mode
 			disable-wwaypoints=false
-			disabled-wwaypoints-features=sneak_modifications, hoplite-helpers
+			disabled-wwaypoints-features=sneak_modifications, sign_modifications
 			""");
 
 		UtilityPolicy policy = PolicyConfig.load(path, null);
@@ -43,8 +48,9 @@ final class PolicyConfigTest {
 		assertTrue(policy.worldMap().disables(WorldMapFeature.PLAYER_RADAR));
 		assertTrue(policy.worldMap().disables(WorldMapFeature.CAVE_MODE));
 		assertTrue(policy.waypoints().disables(WaypointsFeature.SNEAK_MODIFICATIONS));
-		assertTrue(policy.waypoints().disables(WaypointsFeature.HOPLITE_HELPERS));
-		assertFalse(policy.waypoints().disables(WaypointsFeature.DEATH_WAYPOINTS));
+		assertTrue(policy.waypoints().disables(WaypointsFeature.SIGN_MODIFICATIONS));
+		assertFalse(policy.waypoints().disables(WaypointsFeature.ENTIRE_MOD));
+		assertEquals(0x22, policy.waypoints().disabledMask());
 	}
 
 	@Test
@@ -65,13 +71,35 @@ final class PolicyConfigTest {
 	@Test
 	void warnsAndIgnoresUnknownFeaturesAndInvalidBooleans() throws Exception {
 		Path path = temporaryDirectory.resolve(PolicyConfig.FILE_NAME);
-		Files.writeString(path, "disable-wwaypoints=maybe\ndisabled-wwaypoints-features=death-waypoints,unknown\n");
+		Files.writeString(path, "disable-wwaypoints=maybe\ndisabled-wwaypoints-features=sign-modifications,unknown\n");
 		var warnings = new ArrayList<String>();
 
 		UtilityPolicy policy = PolicyConfig.load(path, warnings::add);
 
 		assertFalse(policy.waypoints().disables(WaypointsFeature.ENTIRE_MOD));
-		assertTrue(policy.waypoints().disables(WaypointsFeature.DEATH_WAYPOINTS));
+		assertTrue(policy.waypoints().disables(WaypointsFeature.SIGN_MODIFICATIONS));
 		assertTrue(warnings.size() == 2);
+	}
+
+	@Test
+	void retiredFeatureIdsCannotProduceRestrictions() throws Exception {
+		Path path = temporaryDirectory.resolve(PolicyConfig.FILE_NAME);
+		Files.writeString(path, "disabled-wwaypoints-features=death-waypoints,chat_coordinate_capture,hoplite-helpers\n");
+		var warnings = new ArrayList<String>();
+
+		UtilityPolicy policy = PolicyConfig.load(path, warnings::add);
+
+		assertEquals(0, policy.waypoints().disabledMask());
+		assertEquals(3, warnings.size());
+		assertEquals(3, WaypointsFeature.values().length);
+	}
+
+	@Test
+	void wholeModAndSignPolicyKeepTheirWireAssignments() throws Exception {
+		Path path = temporaryDirectory.resolve(PolicyConfig.FILE_NAME);
+		Files.writeString(path, "disable-wwaypoints=true\ndisabled-wwaypoints-features=sign-modifications\n");
+		assertEquals(0x21, PolicyConfig.load(path, null).waypoints().disabledMask());
+		Files.writeString(path, "disabled-wwaypoints-features=entire-mod\n");
+		assertEquals(0x01, PolicyConfig.load(path, null).waypoints().disabledMask());
 	}
 }
