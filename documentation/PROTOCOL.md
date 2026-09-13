@@ -16,9 +16,7 @@ Policies are connection-scoped. Each client resets to unrestricted local behavio
 ## wWorldMap policy
 
 - Channel: `wworldmap:policy`
-- Protocol version: `2`
-
-This protocol and its existing bit assignments are unchanged.
+- Protocol version: `1`
 
 | Bit | Mask | Configuration ID | Effect |
 | ---: | ---: | --- | --- |
@@ -28,7 +26,7 @@ This protocol and its existing bit assignments are unchanged.
 | 3 | `0x08` | `orbit` | Disable orbit views and force active map/minimap views to top-down. |
 | 4 | `0x10` | `cave-mode` | Force cave mode and level cut off without changing local settings. |
 
-A policy disabling player and entity radar has mask `0x06` and bytes `02 06`.
+A policy disabling player and entity radar has mask `0x06` and bytes `01 06`.
 
 ## wWaypoints policy
 

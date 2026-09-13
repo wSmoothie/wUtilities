@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 
 public final class PolicyProtocol {
 	public static final String WORLD_MAP_CHANNEL = "wworldmap:policy";
-	public static final int WORLD_MAP_VERSION = 2;
+	public static final int WORLD_MAP_VERSION = 1;
 	public static final String WAYPOINTS_CHANNEL = "wwaypoints:policy";
 	public static final int WAYPOINTS_VERSION = 1;
 	/** Legacy aliases retained for integrations compiled against the original API. */

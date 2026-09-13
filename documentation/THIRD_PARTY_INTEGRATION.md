@@ -2,7 +2,7 @@
 
 You do not need to depend on wUtilities. Implement the applicable two-field protocol in [PROTOCOL.md](PROTOCOL.md) and send it on `wworldmap:policy` or `wwaypoints:policy`.
 
-The example below sends wWorldMap protocol v2. To send wWaypoints policy, use channel `wwaypoints:policy`, version byte `1`, and the wWaypoints bit table from the protocol specification.
+The example below sends wWorldMap protocol v1. To send wWaypoints policy, use channel `wwaypoints:policy`, the same version byte `1`, and the wWaypoints bit table from the protocol specification.
 
 ## Bukkit/Paper example
 
@@ -27,7 +27,7 @@ public void onEnable() {
 private static byte[] encodePolicy(int disabledMask) {
     if (disabledMask < 0) throw new IllegalArgumentException("negative mask");
     ByteArrayOutputStream out = new ByteArrayOutputStream(6);
-    out.write(2); // protocol version
+    out.write(1); // protocol version
     do {
         int next = disabledMask & 0x7F;
         disabledMask >>>= 7;
@@ -42,7 +42,7 @@ Call `unregisterOutgoingPluginChannel` from `onDisable` if your plugin owns the 
 
 ## Fabric example
 
-Define a `CustomPacketPayload` whose codec writes an unsigned byte with value `2`, followed by the disabled-mask VarInt. Register it with `PayloadTypeRegistry.playS2C()` during mod initialization. At `ServerPlayConnectionEvents.JOIN`, check `ServerPlayNetworking.canSend(player, TYPE)` before sending so clients without the receiver are left alone.
+Define a `CustomPacketPayload` whose codec writes an unsigned byte with value `1`, followed by the disabled-mask VarInt. Register it with `PayloadTypeRegistry.playS2C()` during mod initialization. At `ServerPlayConnectionEvents.JOIN`, check `ServerPlayNetworking.canSend(player, TYPE)` before sending so clients without the receiver are left alone.
 
 ```java
 ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {

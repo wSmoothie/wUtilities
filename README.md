@@ -38,7 +38,7 @@ wWorldMap feature IDs are `entire-mod`, `player-radar`, `entity-radar`, `orbit`,
 
 wWaypoints feature IDs are `entire-mod`, `sneak-modifications`, and `sign-modifications`. Underscores are accepted as aliases in configuration. Unknown feature IDs are ignored with a warning. Local client preferences are never overwritten; server policy is an additional connection-scoped restriction.
 
-The existing wWorldMap protocol remains version 2 on `wworldmap:policy`. The independent wWaypoints protocol is version 1 on `wwaypoints:policy`. See the [protocol specification](documentation/PROTOCOL.md), [platform guide](documentation/PLATFORMS.md), and [third-party integration guide](documentation/THIRD_PARTY_INTEGRATION.md).
+Both protocols use version 1, on independent channels: `wworldmap:policy` and `wwaypoints:policy`. See the [protocol specification](documentation/PROTOCOL.md), [platform guide](documentation/PLATFORMS.md), and [third-party integration guide](documentation/THIRD_PARTY_INTEGRATION.md).
 
 ## Development servers
 
