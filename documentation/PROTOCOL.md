@@ -39,13 +39,13 @@ A policy disabling player and entity radar has mask `0x06` and bytes `02 06`.
 | ---: | ---: | --- | --- |
 | 0 | `0x01` | `entire-mod` | Disable all wWaypoints behavior and integration for this connection. |
 | 1 | `0x02` | `sneak-modifications` | Disable Toggle Sneak, input overrides, container persistence, and interaction rerouting. |
-| 5 | `0x20` | `sign-modifications` | Disable sign editor popup suppression, restoring the vanilla sign editor. |
+| 2 | `0x04` | `sign-modifications` | Disable sign editor popup suppression, restoring the vanilla sign editor. |
 
 Bit 0 overrides every feature-specific bit. `sneak_modifications` and other underscore forms are accepted as configuration aliases, but the canonical IDs use hyphens.
 
-Bits 2-4 (`0x04`, `0x08`, `0x10`) are retired and ignored by updated clients. They formerly disabled death waypoints, chat-coordinate capture, and Hoplite helpers; those features can now only be restricted through `entire-mod`. Do not reuse these bits. Older clients ignore the new sign bit and require an update to enforce it. The protocol version stays `1`, preserving the existing whole-mod and sneak bit assignments.
+These are the three supported restrictions in protocol version `1`. Death waypoints, chat-coordinate capture, and Hoplite helpers can only be restricted through `entire-mod`. Bits 3 and above are unassigned and ignored.
 
-A policy disabling sneak and sign modifications has mask `0x22` and bytes `01 22`. The two restrictions are independent; sign-only policy leaves Toggle Sneak available.
+A policy disabling sneak and sign modifications has mask `0x06` and bytes `01 06`. The two restrictions are independent; sign-only policy leaves Toggle Sneak available.
 
 ## Compatibility and trust
 

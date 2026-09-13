@@ -50,7 +50,7 @@ final class PolicyConfigTest {
 		assertTrue(policy.waypoints().disables(WaypointsFeature.SNEAK_MODIFICATIONS));
 		assertTrue(policy.waypoints().disables(WaypointsFeature.SIGN_MODIFICATIONS));
 		assertFalse(policy.waypoints().disables(WaypointsFeature.ENTIRE_MOD));
-		assertEquals(0x22, policy.waypoints().disabledMask());
+		assertEquals(0x06, policy.waypoints().disabledMask());
 	}
 
 	@Test
@@ -82,7 +82,7 @@ final class PolicyConfigTest {
 	}
 
 	@Test
-	void retiredFeatureIdsCannotProduceRestrictions() throws Exception {
+	void unsupportedFeatureIdsCannotProduceRestrictions() throws Exception {
 		Path path = temporaryDirectory.resolve(PolicyConfig.FILE_NAME);
 		Files.writeString(path, "disabled-wwaypoints-features=death-waypoints,chat_coordinate_capture,hoplite-helpers\n");
 		var warnings = new ArrayList<String>();
@@ -95,10 +95,10 @@ final class PolicyConfigTest {
 	}
 
 	@Test
-	void wholeModAndSignPolicyKeepTheirWireAssignments() throws Exception {
+	void wholeModAndSignPolicyUseCompactWireAssignments() throws Exception {
 		Path path = temporaryDirectory.resolve(PolicyConfig.FILE_NAME);
 		Files.writeString(path, "disable-wwaypoints=true\ndisabled-wwaypoints-features=sign-modifications\n");
-		assertEquals(0x21, PolicyConfig.load(path, null).waypoints().disabledMask());
+		assertEquals(0x05, PolicyConfig.load(path, null).waypoints().disabledMask());
 		Files.writeString(path, "disabled-wwaypoints-features=entire-mod\n");
 		assertEquals(0x01, PolicyConfig.load(path, null).waypoints().disabledMask());
 	}

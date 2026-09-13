@@ -7,8 +7,7 @@ import java.util.Optional;
 public enum WaypointsFeature {
 	ENTIRE_MOD(0, "entire-mod"),
 	SNEAK_MODIFICATIONS(1, "sneak-modifications"),
-	// Bits 2-4 are retired; never reuse them for a different restriction.
-	SIGN_MODIFICATIONS(5, "sign-modifications");
+	SIGN_MODIFICATIONS(2, "sign-modifications");
 
 	private final int mask;
 	private final String id;
