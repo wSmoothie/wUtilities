@@ -29,9 +29,11 @@ deps.fabric_api = "0.134.1+1.21.9"
 deps.fabric_api = "0.141.6+1.21.11"
 [fabric."26.1.2"]
 deps.fabric_loader = "0.19.3"
+deps.fabric_loader_minimum = "0.19.2"
 deps.fabric_api = "0.155.2+26.1.2"
 [fabric."26.2"]
 deps.fabric_loader = "0.19.3"
+deps.fabric_loader_minimum = "0.19.2"
 deps.fabric_api = "0.158.0+26.2"
 
 [neoforge."1.20.2"]
