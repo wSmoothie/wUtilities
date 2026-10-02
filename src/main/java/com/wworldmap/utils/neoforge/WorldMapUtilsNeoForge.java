@@ -3,6 +3,7 @@
 
 import com.wworldmap.utils.policy.PolicyConfig;
 import com.wworldmap.utils.policy.UtilityPolicy;
+import com.wworldmap.utils.protocol.PolicyProtocol;
 //? if <1.20.5
 import com.wworldmap.utils.protocol.LegacyPolicyPacket;
 //? if >=1.20.5
@@ -54,9 +55,9 @@ public final class WorldMapUtilsNeoForge {
 
 	//? if >=1.20.5 {
 	private void registerPayload(RegisterPayloadHandlersEvent event) {
-		event.registrar("2").optional().playToClient(
+		event.registrar(Integer.toString(PolicyProtocol.WORLD_MAP_VERSION)).optional().playToClient(
 			ModPolicyPayload.TYPE, ModPolicyPayload.CODEC, (payload, context) -> {});
-		event.registrar("1").optional().playToClient(
+		event.registrar(Integer.toString(PolicyProtocol.WAYPOINTS_VERSION)).optional().playToClient(
 			WaypointsPolicyPayload.TYPE, WaypointsPolicyPayload.CODEC, (payload, context) -> {});
 	}
 	//?}

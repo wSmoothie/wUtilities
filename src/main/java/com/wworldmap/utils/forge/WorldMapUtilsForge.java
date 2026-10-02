@@ -3,6 +3,7 @@
 
 import com.wworldmap.utils.policy.PolicyConfig;
 import com.wworldmap.utils.policy.UtilityPolicy;
+import com.wworldmap.utils.protocol.PolicyProtocol;
 //? if <1.20.5
 import com.wworldmap.utils.protocol.LegacyPolicyPacket;
 //? if >=1.20.5
@@ -67,12 +68,12 @@ public final class WorldMapUtilsForge {
 		}
 		//? if >=1.20.5 {
 		channel = ChannelBuilder.named(ModPolicyPayload.TYPE.id())
-			.networkProtocolVersion(2).optional().payloadChannel()
+			.networkProtocolVersion(PolicyProtocol.WORLD_MAP_VERSION).optional().payloadChannel()
 			.protocol(NetworkProtocol.PLAY).flow(PacketFlow.CLIENTBOUND)
 			.add(ModPolicyPayload.TYPE, ModPolicyPayload.CODEC, (payload, context) -> {})
 			.build();
 		waypointsChannel = ChannelBuilder.named(WaypointsPolicyPayload.TYPE.id())
-			.networkProtocolVersion(1).optional().payloadChannel()
+			.networkProtocolVersion(PolicyProtocol.WAYPOINTS_VERSION).optional().payloadChannel()
 			.protocol(NetworkProtocol.PLAY).flow(PacketFlow.CLIENTBOUND)
 			.add(WaypointsPolicyPayload.TYPE, WaypointsPolicyPayload.CODEC, (payload, context) -> {})
 			.build();
