@@ -3,11 +3,12 @@
 
 import com.wworldmap.utils.policy.PolicyConfig;
 import com.wworldmap.utils.policy.UtilityPolicy;
-import com.wworldmap.utils.protocol.PolicyProtocol;
 //? if <1.20.5
 import com.wworldmap.utils.protocol.LegacyPolicyPacket;
 //? if >=1.20.5
 import com.wworldmap.utils.protocol.ModPolicyPayload;
+//? if >=1.20.5
+import com.wworldmap.utils.protocol.PolicyProtocol;
 //? if >=1.20.5
 import com.wworldmap.utils.protocol.WaypointsPolicyPayload;
 import java.io.IOException;
