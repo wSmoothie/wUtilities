@@ -5,6 +5,7 @@ apply(from = rootProject.file("gradle/compatibility-cohorts.gradle.kts"))
 
 val mcRange = extra["compatibility.minecraftRange"] as String
 val archiveVersion = extra["compatibility.archiveVersion"] as String
+val legacyMetadata = sc.current.parsed < "1.20.5"
 version = "${project.property("mod.version")}+$archiveVersion"
 group = project.property("mod.group") as String
 base.archivesName = "wUtilities ${project.property("mod.version")} NeoForge $archiveVersion"
@@ -32,10 +33,21 @@ tasks.test { useJUnitPlatform(); workingDir = rootProject.projectDir }
 tasks.processResources {
     exclude("fabric.mod.json", "META-INF/mods.toml")
     val props = mapOf("version" to project.property("mod.version"), "minecraft_version" to mcRange,
-        "java_version" to requiredJava.majorVersion, "neoforge_version" to project.property("deps.neoforge"))
+        "java_version" to requiredJava.majorVersion, "neoforge_version" to project.property("deps.neoforge"),
+        "javafml_version" to if (legacyMetadata) "1" else "3")
     inputs.properties(props)
-    filesMatching("META-INF/neoforge.mods.toml") { expand(props) }
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand(props)
+        if (legacyMetadata) {
+            path = "META-INF/mods.toml"
+            filter { line -> if (line == "type=\"required\"") "mandatory=true\n$line" else line }
+        }
+    }
 }
+
+extra["verification.neoforgeLegacyMetadata"] = legacyMetadata
+extra["verification.neoforgeMinecraftRange"] = mcRange
+apply(from = rootProject.file("gradle/verify-neoforge-metadata.gradle.kts"))
 tasks.register<Copy>("buildAndCollect") {
     dependsOn(tasks.named("remapJar")); from(tasks.named("remapJar")); into(rootProject.layout.buildDirectory.dir("artifacts"))
 }

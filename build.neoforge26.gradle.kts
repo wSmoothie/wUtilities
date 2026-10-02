@@ -28,10 +28,14 @@ tasks.test { useJUnitPlatform(); workingDir = rootProject.projectDir }
 tasks.processResources {
     exclude("fabric.mod.json", "META-INF/mods.toml")
     val props = mapOf("version" to project.property("mod.version"), "minecraft_version" to mcRange,
-        "java_version" to 25, "neoforge_version" to project.property("deps.neoforge"))
+        "java_version" to 25, "neoforge_version" to project.property("deps.neoforge"), "javafml_version" to "3")
     inputs.properties(props)
     filesMatching("META-INF/neoforge.mods.toml") { expand(props) }
 }
 tasks.register<Copy>("buildAndCollect") {
     dependsOn(tasks.named("jar")); from(tasks.named("jar")); into(rootProject.layout.buildDirectory.dir("artifacts"))
 }
+
+extra["verification.neoforgeLegacyMetadata"] = false
+extra["verification.neoforgeMinecraftRange"] = mcRange
+apply(from = rootProject.file("gradle/verify-neoforge-metadata.gradle.kts"))
