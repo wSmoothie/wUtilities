@@ -30,7 +30,7 @@ public final class PolicyConfig {
 
 		# Comma-separated wWaypoints feature IDs to disable.
 		# entire-mod              - Disable all wWaypoints behavior.
-		# sneak-modifications     - Disable Toggle Sneak and its input/interaction changes.
+		# sneak-modifications     - Disable non-vanilla sneak changes; basic Toggle Sneak remains available.
 		# sign-modifications      - Disable sign editor popup suppression.
 		disabled-wwaypoints-features=
 		""";

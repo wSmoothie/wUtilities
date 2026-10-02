@@ -3,7 +3,7 @@ Set-StrictMode -Version 2.0
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $Support = Get-Content -Raw -LiteralPath (Join-Path $RepoRoot 'supported-versions.json') | ConvertFrom-Json
-$UserAgent = 'wUtilities-launcher/0.2 (https://github.com/wSmoothie/wUtilities)'
+$UserAgent = 'wUtilities-launcher/0.1 (https://github.com/wSmoothie/wUtilities)'
 $Headers = @{ 'User-Agent' = $UserAgent }
 $ServerKinds = @('fabric', 'paper', 'folia', 'purpur', 'leaf')
 

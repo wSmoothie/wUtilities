@@ -2,7 +2,7 @@
 
 ## Common transport and framing
 
-Both policies are server-to-client play-phase payloads sent after join and whenever policy changes. Each payload has exactly two fields and a maximum encoded size of 6 bytes:
+Both policies are server-to-client play-phase payloads sent after join. Bukkit also sends them when either policy channel is registered. The configuration is loaded once at server startup: edit it, restart the server, and reconnect clients to apply changes. There is no policy hot-reload command. Each payload has exactly two fields and a maximum encoded size of 6 bytes:
 
 | Offset | Type | Meaning |
 | --- | --- | --- |
@@ -36,14 +36,14 @@ A policy disabling player and entity radar has mask `0x06` and bytes `01 06`.
 | Bit | Mask | Configuration ID | Effect |
 | ---: | ---: | --- | --- |
 | 0 | `0x01` | `entire-mod` | Disable all wWaypoints behavior and integration for this connection. |
-| 1 | `0x02` | `sneak-modifications` | Disable Toggle Sneak, input overrides, container persistence, and interaction rerouting. |
+| 1 | `0x02` | `sneak-modifications` | Disable non-vanilla sneak input/interaction changes and container persistence; basic Toggle Sneak and its indicator remain available. |
 | 2 | `0x04` | `sign-modifications` | Disable sign editor popup suppression, restoring the vanilla sign editor. |
 
 Bit 0 overrides every feature-specific bit. `sneak_modifications` and other underscore forms are accepted as configuration aliases, but the canonical IDs use hyphens.
 
 These are the three supported restrictions in protocol version `1`. Death waypoints, chat-coordinate capture, and Hoplite helpers can only be restricted through `entire-mod`. Bits 3 and above are unassigned and ignored.
 
-A policy disabling sneak and sign modifications has mask `0x06` and bytes `01 06`. The two restrictions are independent; sign-only policy leaves Toggle Sneak available.
+A policy disabling sneak and sign modifications has mask `0x06` and bytes `01 06`. The two restrictions are independent. Neither feature-specific restriction disables basic Toggle Sneak; only `entire-mod` disables the mod completely.
 
 ## Compatibility and trust
 

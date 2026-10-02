@@ -16,8 +16,13 @@ val forgeVersions = listOf("1.20.1", "1.21.1", "1.21.11", "26.1.2", "26.2")
 tasks.register<Delete>("cleanArtifacts") { delete(layout.buildDirectory.dir("artifacts")) }
 tasks.register("buildAll") {
     group = "build"
+    description = "Run checks and collect every supported server artifact."
+    dependsOn(":bukkit:check")
     dependsOn(":bukkit:buildAndCollect")
+    dependsOn(fabricAnchors.map { ":$it-fabric:check" })
     dependsOn(fabricAnchors.map { ":$it-fabric:buildAndCollect" })
+    dependsOn(neoForgeAnchors.map { ":$it-neoforge:check" })
     dependsOn(neoForgeAnchors.map { ":$it-neoforge:buildAndCollect" })
+    dependsOn(forgeVersions.map { ":$it-forge:check" })
     dependsOn(forgeVersions.map { ":$it-forge:buildAndCollect" })
 }

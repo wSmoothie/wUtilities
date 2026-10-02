@@ -38,8 +38,12 @@ wWorldMap feature IDs are `entire-mod`, `player-radar`, `entity-radar`, `orbit`,
 
 wWaypoints feature IDs are `entire-mod`, `sneak-modifications`, and `sign-modifications`. Underscores are accepted as aliases in configuration. Unknown feature IDs are ignored with a warning. Local client preferences are never overwritten; server policy is an additional connection-scoped restriction.
 
+`sneak-modifications` restricts non-vanilla input/interaction changes and container persistence. Basic Toggle Sneak and its indicator remain available. `sign-modifications` restores the vanilla sign editor. Only `entire-mod` disables every wWaypoints feature.
+
 Both protocols use version 1, on independent channels: `wworldmap:policy` and `wwaypoints:policy`. See the [protocol specification](documentation/PROTOCOL.md), [platform guide](documentation/PLATFORMS.md), and [third-party integration guide](documentation/THIRD_PARTY_INTEGRATION.md).
 
 ## Development servers
 
 `runServer.bat` prepares an isolated 1.21.11 Fabric or Bukkit-family development server under `servers/`, builds the correct artifact, installs it, and launches the selected server. Use loader-native run configurations or a normal test server for the other compatibility cohorts.
+
+For client UI and server-restriction checks, use one existing development profile authenticated as `wSmoothie`, preserving its complete `options.txt`. Launch A+B only for sharing or other multiplayer checks that need two distinct accounts, or when explicitly requested. See the [server verification guide](documentation/PLATFORMS.md) for disposable packaged-artifact checks across the supported matrix.

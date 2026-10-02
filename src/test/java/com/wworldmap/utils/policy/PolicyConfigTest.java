@@ -25,6 +25,7 @@ final class PolicyConfigTest {
 		assertTrue(generatedConfig.contains("disable-wworldmap=false"));
 		assertTrue(generatedConfig.contains("disabled-wwaypoints-features="));
 		assertTrue(generatedConfig.contains("sign-modifications"));
+		assertTrue(generatedConfig.contains("basic Toggle Sneak remains available"));
 		assertFalse(generatedConfig.contains("death-waypoints"));
 		assertFalse(generatedConfig.contains("chat-coordinate-capture"));
 		assertFalse(generatedConfig.contains("hoplite-helpers"));

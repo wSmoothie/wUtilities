@@ -26,4 +26,17 @@ The Bukkit adapter performs no scheduled or world-region work. Join and channel-
 
 ## Validation
 
-`buildAll` compiles, tests, remaps/packages, and collects every release artifact. Compilation establishes API compatibility; it does not by itself prove a live server startup. Runtime release testing should cover one clean server per artifact cohort, a vanilla client, a protocol-v2 wWorldMap client, a protocol-v1 wWaypoints client, disconnect/reset behavior, and Folia multi-region joins before publishing a release as runtime-tested.
+`buildAll` compiles, tests, remaps/packages, and collects every release artifact. Compilation establishes API compatibility; it does not by itself prove a live server startup. Runtime release testing should cover every advertised Minecraft version in each artifact cohort, a vanilla client, protocol-v1 wWorldMap and wWaypoints clients, disconnect/reset behavior, and Folia multi-region joins before publishing a release as runtime-tested.
+
+`scripts/verify-server-matrix.py --report <outside-repository-directory> --accept-eula`
+installs the packaged artifacts in disposable servers bound to loopback, verifies
+unrestricted first startup and configured restrictions after restart, stops each
+process, and removes its server directory while retaining short reports and logs.
+Use `--accept-eula` only after accepting the Minecraft EULA. This startup/config
+check does not establish player joins, payload delivery, or client-side behavior.
+
+Reports must be under `V:/Documents/ChatGPT/local-reports/wUtilities/`. Use
+`JAVA17_HOME`, `JAVA21_HOME`, and `JAVA25_HOME` to select Java installations;
+the verifier also discovers Java on PATH and installed Gradle toolchains.
+`--loader quilt` limits a run to one loader, and `--resume` reuses successful
+checks only when the packaged artifact SHA-256 still matches.

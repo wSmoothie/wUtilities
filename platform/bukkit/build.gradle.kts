@@ -1,8 +1,9 @@
 plugins { java }
 
-version = "0.2.0"
+version = rootProject.file("stonecutter.properties.toml").readLines()
+    .first { it.startsWith("mod.version = ") }.substringAfter('"').substringBefore('"')
 group = "com.wworldmap"
-base.archivesName = "wUtilities 0.2.0 Bukkit 1.20+"
+base.archivesName = "wUtilities ${project.version} Bukkit 1.20+"
 
 repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
